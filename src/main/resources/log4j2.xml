@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+    <Properties>
+        <Property name="LOG_PATTERN">
+            [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+        </Property>
+        <Property name="BASE_PATH">/Users/youtech/Desktop/projects/logstash_dir/logstash</Property>
+    </Properties>
+    <appender name="STASH" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logback/redditApp.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logback/redditApp.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+    <root level="DEBUG">
+        <appender-ref ref="STASH" />
+    </root>
+</Configuration>
