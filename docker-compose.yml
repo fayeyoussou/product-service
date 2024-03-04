@@ -1,25 +1,36 @@
 version: '3.8'
 
 services:
-  logstash:
-    image: docker.elastic.co/logstash/logstash:7.15.0
+  app_spring:
+    build: .
+#    ports:
+#      - "8080:8080"
+    restart: unless-stopped
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=secret
+#      - MYSQL_DATABASE=product_service
+#    depends_on:
+#      - mysqlapp
+    networks:
+      app-network:
+        aliases:
+          - app_spring
+
+  mysqlapp:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: product_service
     volumes:
-      - ./elk:/usr/share/logstash/pipeline
-    depends_on:
-      - elasticsearch
-    environment:
-      - "discovery.type=single-node"
+      - mysql-data:/var/lib/mysql
+    networks:
+      app-network:
+        aliases:
+          - mysqlapp
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
-    environment:
-      - "discovery.type=single-node"
-    ports:
-      - "9200:9200"
+networks:
+  app-network:
+    driver: bridge
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.15.0
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
+volumes:
+  mysql-data:
